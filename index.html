@@ -1,308 +1,342 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4f8ef7">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Babar Agent">
-<link rel="manifest" href="manifest.json">
 <title>Babar ka Agent</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
-:root{--bg:#080c14;--card:#0f1521;--card2:#151d2e;--card3:#1a2338;--accent:#4f8ef7;--accent2:#7c5cfc;--gold:#f0a500;--green:#2ecc71;--pink:#ff6b6b;--teal:#00d2d3;--text:#e8edf5;--muted:#7a8499;--border:#1e2a40;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px;}
-.app{max-width:480px;margin:0 auto;padding:12px;}
+body{background:#080c14;color:#e8edf5;font-family:Arial,sans-serif;min-height:100vh;padding:16px;padding-bottom:80px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:#0f1521;border:1px solid #1e2a40;border-radius:14px;padding:10px 16px;margin-bottom:14px;}
+.topbar-left{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:#7a8499;}
+.topbar-left strong{color:#e8edf5;}
+.dot{width:8px;height:8px;border-radius:50%;background:#2ecc71;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.hijri{font-size:0.72rem;color:#7a8499;background:#151d2e;border:1px solid #1e2a40;border-radius:8px;padding:4px 10px;}
+.hero{background:linear-gradient(135deg,#0f1829,#0a1020);border:1px solid #1e2a40;border-radius:20px;padding:20px;margin-bottom:14px;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.greeting{font-size:1.3rem;font-weight:700;background:linear-gradient(90deg,#fff,#4f8ef7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.greeting-sub{color:#7a8499;font-size:0.78rem;margin-top:4px;}
+.clock{font-size:2rem;font-weight:700;color:#4f8ef7;font-variant-numeric:tabular-nums;}
+.date{font-size:0.7rem;color:#7a8499;text-align:right;margin-top:2px;}
+.prog-bar{margin-top:14px;}
+.prog-label{display:flex;justify-content:space-between;font-size:0.7rem;color:#7a8499;margin-bottom:5px;}
+.prog-label span:last-child{color:#4f8ef7;}
+.track{height:4px;background:#1a2338;border-radius:4px;}
+.fill{height:100%;background:linear-gradient(90deg,#4f8ef7,#7c5cfc);border-radius:4px;transition:width 1s;}
+.quote{background:linear-gradient(135deg,rgba(124,92,252,0.1),rgba(79,142,247,0.08));border:1px solid rgba(124,92,252,0.2);border-radius:14px;padding:14px;margin-bottom:14px;text-align:center;font-family:serif;direction:rtl;font-size:1.1rem;color:#c4b5fd;line-height:1.8;}
+
+/* BIG SPEAK BUTTON */
+.speak-section{margin-bottom:14px;}
+.speak-btn{width:100%;padding:18px;background:linear-gradient(135deg,#4f8ef7,#7c5cfc);border:none;border-radius:18px;color:white;font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;}
+.speak-btn:hover{opacity:0.9;transform:scale(0.99);}
+.speak-btn.speaking{animation:speakPulse 1s infinite;}
+@keyframes speakPulse{0%,100%{box-shadow:0 4px 20px rgba(79,142,247,0.4)}50%{box-shadow:0 4px 40px rgba(79,142,247,0.8)}}
+.speak-status{text-align:center;font-size:0.78rem;color:#7a8499;margin-top:8px;}
 
 /* SPEAKING OVERLAY */
-.speak-overlay{display:none;position:fixed;inset:0;background:rgba(8,12,20,0.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
-.speak-overlay.show{display:flex;}
-.speak-avatar{font-size:5rem;margin-bottom:16px;animation:float 2s ease-in-out infinite;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(8,12,20,0.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
+.overlay.show{display:flex;}
+.ov-avatar{font-size:5rem;margin-bottom:16px;animation:float 2s ease-in-out infinite;}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.speak-waves{display:flex;gap:5px;align-items:center;justify-content:center;margin-bottom:20px;height:40px;}
-.speak-wave{width:5px;background:var(--accent);border-radius:10px;animation:wave 1.2s ease-in-out infinite;}
-.speak-wave:nth-child(1){animation-delay:0s;height:15px;}
-.speak-wave:nth-child(2){animation-delay:0.1s;height:25px;}
-.speak-wave:nth-child(3){animation-delay:0.2s;height:35px;}
-.speak-wave:nth-child(4){animation-delay:0.3s;height:25px;}
-.speak-wave:nth-child(5){animation-delay:0.4s;height:15px;}
-.speak-wave:nth-child(6){animation-delay:0.2s;height:30px;}
-.speak-wave:nth-child(7){animation-delay:0.1s;height:20px;}
-@keyframes wave{0%,100%{transform:scaleY(0.5);opacity:0.5}50%{transform:scaleY(1);opacity:1}}
-.speak-text{font-size:1.1rem;color:var(--text);line-height:1.8;margin-bottom:24px;max-width:380px;}
-.speak-text.urdu{font-family:'Noto Nastaliq Urdu',serif;direction:rtl;font-size:1.2rem;}
-.speak-skip{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 24px;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-top:8px;}
-.speak-skip:hover{color:var(--text);}
+.waves{display:flex;gap:5px;align-items:center;justify-content:center;margin-bottom:20px;height:40px;}
+.wave{width:5px;background:#4f8ef7;border-radius:10px;animation:wave 1.2s ease-in-out infinite;}
+.wave:nth-child(1){animation-delay:0s;}
+.wave:nth-child(2){animation-delay:0.1s;}
+.wave:nth-child(3){animation-delay:0.2s;}
+.wave:nth-child(4){animation-delay:0.3s;}
+.wave:nth-child(5){animation-delay:0.2s;}
+@keyframes wave{0%,100%{height:10px;opacity:0.5}50%{height:35px;opacity:1}}
+.ov-text{font-size:1rem;color:#e8edf5;line-height:1.9;margin-bottom:24px;max-width:360px;}
+.skip-btn{background:#151d2e;border:1px solid #1e2a40;border-radius:12px;padding:12px 28px;color:#7a8499;font-size:0.85rem;cursor:pointer;margin-top:8px;}
 
-/* MORNING CARD */
-.morning-card{background:linear-gradient(135deg,#0d1829,#0a1020);border:1px solid rgba(79,142,247,0.3);border-radius:20px;padding:20px;margin-bottom:12px;display:none;}
-.morning-card.show{display:block;animation:fadeIn 0.5s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.morning-greeting{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
-.morning-msg{font-size:0.85rem;color:var(--muted);line-height:1.8;margin-bottom:14px;}
-.morning-q{font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:10px;}
-.morning-input-row{display:flex;gap:8px;}
-.morning-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:0.85rem;outline:none;font-family:inherit;}
-.morning-input:focus{border-color:var(--accent);}
-.morning-send{background:var(--accent);border:none;border-radius:10px;padding:10px 16px;color:white;font-size:0.9rem;cursor:pointer;}
-.morning-response{margin-top:12px;background:var(--card2);border-radius:12px;padding:12px;font-size:0.82rem;line-height:1.7;display:none;color:var(--text);}
-.morning-response.show{display:block;animation:fadeIn 0.3s ease;}
+.card{background:#0f1521;border:1px solid #1e2a40;border-radius:14px;padding:14px;margin-bottom:12px;}
+.card-title{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:#7a8499;margin-bottom:10px;}
+.namaz-row{display:flex;align-items:center;padding:8px 10px;border-radius:9px;background:#151d2e;margin-bottom:5px;font-size:0.82rem;}
+.namaz-row.current{background:rgba(79,142,247,0.12);border:1px solid rgba(79,142,247,0.25);}
+.namaz-row.done{opacity:0.3;}
+.n-emoji{width:26px;}
+.n-name{flex:1;font-weight:500;}
+.namaz-row.current .n-name{color:#4f8ef7;}
+.n-time{color:#f0a500;font-size:0.78rem;font-weight:600;}
+.now-pill{font-size:0.58rem;background:#4f8ef7;color:white;padding:2px 8px;border-radius:10px;font-weight:700;margin-right:6px;animation:blink 1.5s infinite;}
+.meal-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:#151d2e;margin-bottom:6px;font-size:0.82rem;}
+.meal-row.active{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);}
+.meal-row.past{opacity:0.35;}
+.meal-info{flex:1;}
+.meal-name{font-weight:600;}
+.meal-time{font-size:0.7rem;color:#7a8499;}
+.meal-badge{font-size:0.62rem;background:rgba(46,204,113,0.2);color:#2ecc71;padding:2px 8px;border-radius:10px;font-weight:700;}
+.w-row{display:flex;align-items:center;gap:14px;}
+.w-icon{font-size:2.8rem;}
+.w-temp{font-size:2.2rem;font-weight:700;color:#f0a500;}
+.w-desc{color:#7a8499;font-size:0.78rem;}
+.w-pills{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.w-pill{background:#151d2e;border-radius:20px;padding:4px 10px;font-size:0.7rem;color:#7a8499;}
 
-/* SPEAK BUTTON */
-.speak-fab{position:fixed;bottom:90px;right:16px;width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(79,142,247,0.4);z-index:50;transition:all 0.2s;}
-.speak-fab:hover{transform:scale(1.1);}
-.speak-fab.speaking{animation:speakPulse 1s infinite;}
-@keyframes speakPulse{0%,100%{box-shadow:0 4px 20px rgba(79,142,247,0.4)}50%{box-shadow:0 4px 30px rgba(79,142,247,0.8)}}
+/* TASK */
+.task-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:#151d2e;margin-bottom:5px;cursor:pointer;}
+.task-check{width:18px;height:18px;border-radius:50%;border:2px solid #1e2a40;display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;}
+.task-row.done .task-check{background:#2ecc71;border-color:#2ecc71;color:white;}
+.task-row.done .task-txt{text-decoration:line-through;opacity:0.45;}
+.task-txt{flex:1;font-size:0.82rem;}
+.add-btn{width:100%;padding:9px;background:rgba(79,142,247,0.15);border:1px solid rgba(79,142,247,0.3);border-radius:9px;color:#4f8ef7;font-size:0.8rem;cursor:pointer;margin-top:6px;font-weight:600;}
+.task-input{width:100%;background:#151d2e;border:1px solid #1e2a40;border-radius:9px;padding:9px 12px;color:#e8edf5;font-size:0.82rem;outline:none;margin-bottom:6px;display:none;}
+.task-input:focus{border-color:#4f8ef7;}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;}
-.topbar-left{display:flex;align-items:center;gap:8px;}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.topbar-text{font-size:0.72rem;color:var(--muted);}
-.topbar-text strong{color:var(--text);}
-.icon-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:0.72rem;color:var(--muted);cursor:pointer;}
+/* WATER */
+.glass{font-size:1.5rem;cursor:pointer;opacity:0.3;filter:grayscale(1);transition:all 0.2s;margin-right:4px;}
+.glass.filled{opacity:1;filter:none;}
 
-.offline-bar{display:none;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:6px 12px;margin-bottom:10px;font-size:0.72rem;color:var(--pink);text-align:center;}
-.offline-bar.show{display:block;}
+/* MOOD */
+.mood-row{display:flex;justify-content:space-around;margin:4px 0;}
+.mood-btn{font-size:1.8rem;cursor:pointer;opacity:0.4;transition:all 0.2s;padding:6px;border-radius:10px;}
+.mood-btn.sel{opacity:1;transform:scale(1.3);background:#151d2e;}
 
-.notif{display:none;border-radius:12px;padding:10px 14px;margin-bottom:12px;align-items:center;gap:10px;}
-.notif.show{display:flex;animation:slideIn 0.3s ease;}
-.notif.namaz{background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.3);}
-.notif.khana{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);}
-.notif.reminder{background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);}
-.notif.health{background:rgba(0,210,211,0.1);border:1px solid rgba(0,210,211,0.3);}
-@keyframes slideIn{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
-.notif-icon{font-size:1.6rem;}
-.notif-body{flex:1;}
-.notif-title{font-weight:700;font-size:0.85rem;}
-.notif-msg{color:var(--muted);font-size:0.72rem;margin-top:2px;line-height:1.5;}
-.notif-close{color:var(--muted);cursor:pointer;padding:2px 8px;font-size:1.1rem;}
-
-.hero{background:linear-gradient(135deg,#0f1829,#0a1020);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:12px;}
-.hero-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.greeting-main{font-size:1.3rem;font-weight:700;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.greeting-sub{color:var(--muted);font-size:0.75rem;margin-top:4px;}
-.clock-block{text-align:right;}
-.clock-big{font-size:2rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;}
-.date-line{color:var(--muted);font-size:0.7rem;margin-top:2px;}
-.day-progress{margin-top:14px;}
-.progress-label{display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-bottom:5px;}
-.progress-label span:last-child{color:var(--accent);}
-.progress-track{height:4px;background:var(--card3);border-radius:4px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 1s ease;}
-
-.quote-bar{background:linear-gradient(135deg,rgba(124,92,252,0.1),rgba(79,142,247,0.08));border:1px solid rgba(124,92,252,0.2);border-radius:14px;padding:14px 16px;margin-bottom:12px;text-align:center;}
-.quote-text{font-family:'Noto Nastaliq Urdu',serif;direction:rtl;font-size:1rem;color:#c4b5fd;line-height:1.8;}
-
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding:6px 0 10px;}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0f1521;border-top:1px solid #1e2a40;display:flex;padding:6px 0 10px;z-index:100;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px;}
-.nav-item .nav-icon{font-size:1.3rem;}
-.nav-item .nav-label{font-size:0.6rem;color:var(--muted);}
-.nav-item.active .nav-label{color:var(--accent);}
+.nav-icon{font-size:1.3rem;}
+.nav-label{font-size:0.6rem;color:#7a8499;}
+.nav-item.active .nav-label{color:#4f8ef7;}
 .nav-item.active .nav-icon{transform:scale(1.15);}
-
 .panel{display:none;}
 .panel.active{display:block;}
-
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
-.card-title{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:10px;}
-
-.weather-row{display:flex;align-items:center;gap:14px;}
-.w-icon{font-size:2.8rem;}
-.w-temp{font-size:2.2rem;font-weight:700;color:var(--gold);}
-.w-desc{color:var(--muted);font-size:0.78rem;}
-.w-pills{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-.w-pill{background:var(--card2);border-radius:20px;padding:4px 10px;font-size:0.7rem;color:var(--muted);}
-
-.namaz-grid{display:flex;flex-direction:column;gap:5px;}
-.namaz-row{display:flex;align-items:center;padding:8px 10px;border-radius:9px;background:var(--card2);font-size:0.82rem;}
-.namaz-row.current{background:rgba(79,142,247,0.12);border:1px solid rgba(79,142,247,0.25);}
-.namaz-row.done{opacity:0.35;}
-.namaz-emoji{width:26px;}
-.namaz-name{flex:1;font-weight:500;}
-.namaz-row.current .namaz-name{color:var(--accent);}
-.namaz-time-val{color:var(--gold);font-size:0.78rem;font-weight:600;}
-.now-pill{font-size:0.58rem;background:var(--accent);color:white;padding:2px 8px;border-radius:10px;font-weight:700;margin-right:6px;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
-
-.meal-grid{display:flex;flex-direction:column;gap:6px;}
-.meal-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:var(--card2);}
-.meal-row.active-meal{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);}
-.meal-row.past-meal{opacity:0.35;}
-.meal-em{font-size:1.3rem;}
-.meal-info{flex:1;}
-.meal-nm{font-weight:600;font-size:0.82rem;}
-.meal-tm{font-size:0.7rem;color:var(--muted);}
-.meal-badge{font-size:0.62rem;background:rgba(46,204,113,0.2);color:var(--green);padding:2px 8px;border-radius:10px;font-weight:700;}
-
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.stat-card{background:var(--card2);border-radius:10px;padding:12px;text-align:center;}
-.stat-val{font-size:1.8rem;font-weight:700;}
-.stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
-
-.water-label{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);margin-bottom:6px;}
-.water-glasses{display:flex;gap:6px;flex-wrap:wrap;}
-.glass{font-size:1.4rem;cursor:pointer;opacity:0.3;transition:all 0.2s;filter:grayscale(1);}
-.glass.filled{opacity:1;filter:none;transform:scale(1.1);}
-
-.task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.task-progress-text{font-size:0.72rem;color:var(--muted);}
-.add-task-btn{background:rgba(79,142,247,0.15);border:1px solid rgba(79,142,247,0.3);color:var(--accent);border-radius:8px;padding:5px 12px;font-size:0.72rem;cursor:pointer;font-weight:600;}
-.task-input-row{display:none;gap:6px;margin-bottom:8px;}
-.task-input-row.show{display:flex;}
-.task-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:0.8rem;outline:none;font-family:inherit;}
-.task-input:focus{border-color:var(--accent);}
-.task-save-btn{background:var(--accent);border:none;border-radius:8px;padding:7px 12px;color:white;font-size:0.78rem;cursor:pointer;font-weight:600;}
-.task-grid{display:flex;flex-direction:column;gap:5px;}
-.task-row{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:9px;background:var(--card2);cursor:pointer;}
-.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;transition:all 0.2s;}
-.task-row.done .task-check{background:var(--green);border-color:var(--green);color:white;}
-.task-row.done .task-txt{text-decoration:line-through;opacity:0.45;}
-.task-txt{flex:1;font-size:0.82rem;line-height:1.4;}
-.task-t{font-size:0.68rem;color:var(--muted);white-space:nowrap;}
-.task-del{color:var(--muted);font-size:0.75rem;padding:2px 6px;cursor:pointer;}
-
-.chat-messages{height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:10px;scroll-behavior:smooth;}
-.msg{max-width:85%;padding:9px 13px;border-radius:14px;font-size:0.82rem;line-height:1.5;animation:msgIn 0.2s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.msg.user{align-self:flex-end;background:var(--accent);color:white;border-bottom-right-radius:4px;}
-.msg.ai{align-self:flex-start;background:var(--card2);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border);}
-.msg.ai.loading{color:var(--muted);font-style:italic;}
-.quick-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.quick-btn{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:5px 11px;font-size:0.7rem;color:var(--muted);cursor:pointer;white-space:nowrap;}
-.quick-btn:hover{border-color:var(--accent);color:var(--accent);}
-.chat-input-row{display:flex;gap:6px;}
-.chat-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:0.82rem;outline:none;font-family:inherit;}
-.chat-input:focus{border-color:var(--accent);}
-.chat-send{background:var(--accent);border:none;border-radius:10px;width:42px;color:white;font-size:1rem;cursor:pointer;}
-.chat-send:disabled{opacity:0.5;}
-
-.reminder-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
-.reminder-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:var(--card2);}
-.reminder-em{font-size:1.3rem;}
-.reminder-info{flex:1;}
-.reminder-nm{font-weight:500;font-size:0.82rem;}
-.reminder-tm{font-size:0.7rem;color:var(--muted);}
-.reminder-toggle{width:36px;height:20px;background:var(--card3);border-radius:10px;cursor:pointer;position:relative;transition:all 0.2s;border:1px solid var(--border);flex-shrink:0;}
-.reminder-toggle.on{background:var(--green);border-color:var(--green);}
-.reminder-toggle::after{content:'';position:absolute;top:3px;left:3px;width:12px;height:12px;background:white;border-radius:50%;transition:all 0.2s;}
-.reminder-toggle.on::after{left:19px;}
-.form-row{display:flex;gap:6px;margin-top:6px;}
-.form-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:0.78rem;outline:none;font-family:inherit;}
-.form-save{background:var(--accent);border:none;border-radius:8px;padding:7px 14px;color:white;font-size:0.78rem;cursor:pointer;font-weight:600;}
-.add-reminder-form{display:none;margin-top:8px;}
-.add-reminder-form.show{display:block;}
-
-.mood-section{display:flex;justify-content:space-around;margin:6px 0 12px;}
-.mood-btn{font-size:1.8rem;cursor:pointer;padding:6px;border-radius:10px;transition:all 0.2s;opacity:0.5;text-align:center;}
-.mood-btn.selected{opacity:1;transform:scale(1.3);background:var(--card2);}
-.mood-label{font-size:0.65rem;color:var(--muted);text-align:center;margin-top:2px;}
+.notif{display:none;border-radius:12px;padding:10px 14px;margin-bottom:12px;align-items:center;gap:10px;background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);}
+.notif.show{display:flex;}
+.notif-body{flex:1;}
+.notif-title{font-weight:700;color:#f0a500;font-size:0.85rem;}
+.notif-msg{color:#7a8499;font-size:0.72rem;}
 </style>
 </head>
 <body>
 
 <!-- SPEAKING OVERLAY -->
-<div class="speak-overlay" id="speak-overlay">
-  <div class="speak-avatar" id="speak-avatar">🤖</div>
-  <div class="speak-waves" id="speak-waves">
-    <div class="speak-wave"></div><div class="speak-wave"></div><div class="speak-wave"></div>
-    <div class="speak-wave"></div><div class="speak-wave"></div><div class="speak-wave"></div>
-    <div class="speak-wave"></div>
+<div class="overlay" id="overlay">
+  <div class="ov-avatar" id="ov-avatar">🤖</div>
+  <div class="waves">
+    <div class="wave"></div><div class="wave"></div><div class="wave"></div>
+    <div class="wave"></div><div class="wave"></div>
   </div>
-  <div class="speak-text" id="speak-text"></div>
-  <button class="speak-skip" onclick="skipSpeech()">⏭ Skip / Band Karein</button>
+  <div class="ov-text" id="ov-text">...</div>
+  <button class="skip-btn" onclick="skipSpeak()">⏭ Band Karein</button>
 </div>
 
-<div class="app">
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="live-dot" id="status-dot"></div>
-      <div class="topbar-text"><strong>Babar ka Agent</strong> · Vehari</div>
+<div style="max-width:480px;margin:0 auto;">
+
+<div class="topbar">
+  <div class="topbar-left"><div class="dot"></div><strong>Babar ka Agent</strong> &nbsp;·&nbsp; Vehari</div>
+  <div class="hijri" id="hijri">🗓️ ...</div>
+</div>
+
+<div class="notif" id="notif">
+  <div style="font-size:1.4rem" id="notif-icon">🔔</div>
+  <div class="notif-body"><div class="notif-title" id="notif-title"></div><div class="notif-msg" id="notif-msg"></div></div>
+  <div style="cursor:pointer;color:#7a8499;padding:2px 8px;" onclick="document.getElementById('notif').classList.remove('show')">✕</div>
+</div>
+
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="greeting" id="greeting">Assalam o Alaikum, Babar!</div>
+      <div class="greeting-sub" id="greeting-sub">Aaj ka din mubarak ho</div>
+    </div>
+    <div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="date" id="date-str">--</div>
+    </div>
+  </div>
+  <div class="prog-bar">
+    <div class="prog-label"><span>Din ki Progress</span><span id="pct">0%</span></div>
+    <div class="track"><div class="fill" id="fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="quote" id="quote">نیت صاف رکھو، باقی اللہ پر چھوڑ دو۔</div>
+
+<!-- BIG SPEAK BUTTON -->
+<div class="speak-section">
+  <button class="speak-btn" id="speak-btn" onclick="doSpeak()">
+    🎤 &nbsp; Babar se Baat Karo — Dabao!
+  </button>
+  <div class="speak-status" id="speak-status">Dabao — agent awaaz mein sab batayega!</div>
+</div>
+
+<!-- HOME -->
+<div class="panel active" id="panel-home">
+  <div class="card">
+    <div class="card-title">🌤️ Vehari ka Mausam</div>
+    <div id="weather"><div style="color:#7a8499;font-size:0.8rem">Load ho raha hai...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🕌 Namaz ke Awqat</div>
+    <div id="namaz"><div style="color:#7a8499;font-size:0.8rem">Load ho rahe hain...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🍽️ Khane ka Waqt</div>
+    <div id="meals"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💧 Paani — <span id="water-lbl" style="color:#00d2d3">0/8 glass</span></div>
+    <div id="glasses" style="margin-top:4px;"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">😊 Aaj ka Mood</div>
+    <div class="mood-row">
+      <div class="mood-btn" onclick="setMood('😢','Udaas')">😢</div>
+      <div class="mood-btn" onclick="setMood('😐','Theek')">😐</div>
+      <div class="mood-btn" onclick="setMood('🙂','Acha')">🙂</div>
+      <div class="mood-btn" onclick="setMood('😊','Khush')">😊</div>
+      <div class="mood-btn" onclick="setMood('🤩','Zabardast')">🤩</div>
+    </div>
+  </div>
+</div>
+
+<!-- KAAM -->
+<div class="panel" id="panel-kaam">
+  <div class="card">
+    <div class="card-title">✅ Aaj ke Kaam &nbsp;<span id="task-lbl" style="color:#7a8499;font-size:0.7rem;text-transform:none;letter-spacing:0;"></span></div>
+    <div id="task-list"></div>
+    <input class="task-input" id="task-input" placeholder="Naya kaam likhein..." onkeydown="if(event.key==='Enter')addTask()">
+    <button class="add-btn" onclick="toggleInput()">+ Naya Kaam Add Karein</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="panel" id="panel-chat">
+  <div class="card">
+    <div class="card-title">🤖 AI Se Baat Karein</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;">
+      <div onclick="quickMsg('Mujhe subah ki dua batao')" style="background:#151d2e;border:1px solid #1e2a40;border-radius:16px;padding:5px 11px;font-size:0.7rem;color:#7a8499;cursor:pointer;">Subah ki dua</div>
+      <div onclick="quickMsg('Mujhe motivate karo')" style="background:#151d2e;border:1px solid #1e2a40;border-radius:16px;padding:5px 11px;font-size:0.7rem;color:#7a8499;cursor:pointer;">Motivate karo</div>
+      <div onclick="quickMsg('Main thaka hoon kya karun?')" style="background:#151d2e;border:1px solid #1e2a40;border-radius:16px;padding:5px 11px;font-size:0.7rem;color:#7a8499;cursor:pointer;">Thaka hoon</div>
+      <div onclick="quickMsg('Kal ke liye plan banao')" style="background:#151d2e;border:1px solid #1e2a40;border-radius:16px;padding:5px 11px;font-size:0.7rem;color:#7a8499;cursor:pointer;">Kal ki plan</div>
+    </div>
+    <div id="chat-msgs" style="height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+      <div style="background:#151d2e;border:1px solid #1e2a40;border-radius:14px;border-bottom-left-radius:4px;padding:10px 13px;font-size:0.82rem;line-height:1.5;max-width:85%;align-self:flex-start;">Assalam o Alaikum Babar! 👋 Kuch bhi poochein — haazir hoon! 🤲</div>
     </div>
     <div style="display:flex;gap:6px;">
-      <div class="icon-btn" id="hijri-display">🗓️ ...</div>
-      <div class="icon-btn" onclick="init()">🔄</div>
+      <input id="chat-in" style="flex:1;background:#151d2e;border:1px solid #1e2a40;border-radius:10px;padding:9px 12px;color:#e8edf5;font-size:0.82rem;outline:none;" placeholder="Kuch bhi poochein..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendChat()}">
+      <button id="chat-btn" onclick="sendChat()" style="background:#4f8ef7;border:none;border-radius:10px;width:42px;color:white;font-size:1rem;cursor:pointer;">➤</button>
     </div>
   </div>
+</div>
 
-  <div class="offline-bar" id="offline-bar">📡 Offline — Cached data</div>
-
-  <div class="notif" id="notif">
-    <div class="notif-icon" id="notif-icon">🔔</div>
-    <div class="notif-body">
-      <div class="notif-title" id="notif-title"></div>
-      <div class="notif-msg" id="notif-msg"></div>
-    </div>
-    <div class="notif-close" onclick="closeNotif()">✕</div>
-  </div>
-
-  <!-- MORNING CARD -->
-  <div class="morning-card" id="morning-card">
-    <div class="morning-greeting" id="morning-greeting">Good Morning, Babar! 🌅</div>
-    <div class="morning-msg" id="morning-msg"></div>
-    <div class="morning-q">📝 Aaj kya kaam karna hai? Batao mujhe!</div>
-    <div class="morning-input-row">
-      <input class="morning-input" id="morning-input" placeholder="Maslan: Uni jana hai, assignment submit karni hai..." onkeydown="if(event.key==='Enter')sendMorningTask()">
-      <button class="morning-send" onclick="sendMorningTask()">➤</button>
-    </div>
-    <div class="morning-response" id="morning-response"></div>
-  </div>
-
-  <div class="hero">
-    <div class="hero-top">
-      <div>
-        <div class="greeting-main" id="greeting">Assalam o Alaikum, Babar!</div>
-        <div class="greeting-sub" id="greeting-sub">Aaj ka din mubarak ho</div>
-      </div>
-      <div class="clock-block">
-        <div class="clock-big" id="clock">--:--</div>
-        <div class="date-line" id="date-str">--</div>
-      </div>
-    </div>
-    <div class="day-progress">
-      <div class="progress-label"><span>Din ki Progress</span><span id="day-pct">0%</span></div>
-      <div class="progress-track"><div class="progress-fill" id="day-fill" style="width:0%"></div></div>
+<!-- SCHEDULE -->
+<div class="panel" id="panel-schedule">
+  <div class="card">
+    <div class="card-title">📋 Rozana ka Schedule</div>
+    <div style="font-size:0.8rem;color:#7a8499;line-height:2.2;">
+      🌄 03:43 — Fajr se 10 min pehle<br>
+      🌅 05:30 — Good Morning alarm<br>
+      ☕ 07:00 — Nashte ka waqt<br>
+      💧 08:00 — Paani reminder<br>
+      💼 10:30 — Focus time<br>
+      ☀️ 12:07 — Zohar se 10 min pehle<br>
+      🍛 13:00 — Dopahar ka khana<br>
+      😴 14:00 — Qaylula (20 min)<br>
+      🌅 15:44 — Asar se 10 min pehle<br>
+      🏃 16:30 — Walk time<br>
+      🫖 17:00 — Sham ki chai<br>
+      🌆 18:59 — Maghrib se 10 min pehle<br>
+      🌙 20:31 — Isha se 10 min pehle<br>
+      📖 21:00 — Quran / Book<br>
+      📝 21:30 — Kal ki planning<br>
+      😴 22:30 — Sone ka waqt
     </div>
   </div>
+</div>
 
-  <div class="quote-bar">
-    <div class="quote-text" id="quote-text">نیت صاف رکھو، باقی اللہ پر چھوڑ دو۔</div>
-    <div style="font-size:0.68rem;color:var(--muted);margin-top:4px;">— Aaj ka paigham Babar ke liye</div>
-  </div>
+</div>
 
-  <!-- HOME -->
-  <div class="panel active" id="panel-home">
-    <div class="card">
-      <div class="card-title">🌤️ Vehari ka Mausam</div>
-      <div id="weather-content"><div style="color:var(--muted);font-size:0.8rem">Load ho raha hai...</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">🕌 Namaz ke Awqat — Vehari</div>
-      <div class="namaz-grid" id="namaz-grid"><div style="color:var(--muted);font-size:0.8rem">Load ho rahe hain...</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">🍽️ Khane ka Waqt</div>
-      <div class="meal-grid" id="meal-grid"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">💧 Paani Track</div>
-      <div class="water-label"><span>8 glass rozana</span><span id="water-count" style="color:var(--teal);font-weight:600;">0/8</span></div>
-      <div class="water-glasses" id="water-glasses"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">😊 Aaj ka Mood</div>
-      <div class="mood-section">
-        <div><div class="mood-btn" onclick="setMood('😢')">😢</div><div class="mood-label">Udaas</div></div>
-        <div><div class="mood-btn" onclick="setMood('😐')">😐</div><div class="mood-label">Theek</div></div>
-        <div><div class="mood-btn" onclick="setMood('🙂')">🙂</div><div class="mood-label">Acha</div></div>
-        <div><div class="mood-btn" onclick="setMood('😊')">😊</div><div class="mood-label">Khush</div></div>
-        <div><div class="mood-btn" onclick="setMood('🤩')">🤩</div><div class="mood-label">Zabardast</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">📊 Aaj ka Muhasiba</div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-val" id="stat-tasks" style="color:var(--accent)">0/0</div><div class="stat-lbl">Kaam Mukammal</div></div>
-        <div class="stat-card"><div class="stat-val" id="stat-namaz" style="color:var(--gold)">0/5</div><div class="stat-lbl">Namaz Ada</div></div>
-        <div class="stat-card">
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="tab('home')" id="nav-home"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+  <div class="nav-item" onclick="tab('kaam')" id="nav-kaam"><div class="nav-icon">✅</div><div class="nav-label">Kaam</div></div>
+  <div class="nav-item" onclick="tab('chat')" id="nav-chat"><div class="nav-icon">🤖</div><div class="nav-label">AI Chat</div></div>
+  <div class="nav-item" onclick="tab('schedule')" id="nav-schedule"><div class="nav-icon">📋</div><div class="nav-label">Schedule</div></div>
+</div>
+
+<script>
+const LAT=30.0450,LNG=72.3510;
+const QUOTES=["نیت صاف رکھو، باقی اللہ پر چھوڑ دو۔","جو شخص محنت کرتا ہے، قسمت اس کی مدد کرتی ہے۔","ہر مشکل کے بعد آسانی ہے۔","کامیابی کا راز یہ ہے کہ ہمت نہ ہارو۔","اچھا سوچو، اچھا ہوگا۔","وقت سب سے قیمتی چیز ہے۔","دعا اور محنت ساتھ ہو تو منزل دور نہیں۔"];
+const MEALS=[{n:"Nashta",e:"☕",t:"07:00",end:"08:30",d:"Chai, paratha, anday"},{n:"Dopahar ka Khana",e:"🍛",t:"13:00",end:"14:30",d:"Daal, chawal ya salan"},{n:"Sham ki Chai",e:"🫖",t:"17:00",end:"17:45",d:"Chai aur naashta"},{n:"Raat ka Khana",e:"🌙",t:"20:30",end:"22:00",d:"Roti, salan"}];
+const DEF_TASKS=[{t:"Fajr namaz ada karein",done:false,fix:true},{t:"Nashta karein",done:false,fix:true},{t:"Din ka aham kaam karein",done:false,fix:true},{t:"Zohar namaz ada karein",done:false,fix:true},{t:"Asar ki namaz ada karein",done:false,fix:true},{t:"Maghrib aur Isha namaz",done:false,fix:true},{t:"Kal ki tayyari karein",done:false,fix:true}];
+
+function td(){return new Date().toDateString().replace(/ /g,'_');}
+function pad(n){return String(n).padStart(2,'0');}
+function toM(s){if(!s)return 0;const[h,m]=s.split(':').map(Number);return h*60+m;}
+function nowM(){const n=new Date();return n.getHours()*60+n.getMinutes();}
+
+let tasks=JSON.parse(localStorage.getItem('t_'+td())||'null')||DEF_TASKS.map(x=>({...x}));
+let prayers=JSON.parse(localStorage.getItem('prayers')||'[]');
+let water=parseInt(localStorage.getItem('w_'+td())||'0');
+let wx={temp:'?',desc:'Mausam',icon:'🌤️'};
+let notifShown=new Set(JSON.parse(localStorage.getItem('ns_'+td())||'[]'));
+let isSpeaking=false;
+
+// SERVICE WORKER
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// CLOCK
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=pad(n.getHours())+':'+pad(n.getMinutes());
+  const days=['Itwar','Peer','Mangal','Budh','Jumerat','Juma','Hafta'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('date-str').textContent=days[n.getDay()]+', '+n.getDate()+' '+months[n.getMonth()]+' '+n.getFullYear();
+  const pct=Math.min(100,Math.max(0,Math.round((nowM()-360)/960*100)));
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('fill').style.width=pct+'%';
+  checkAlerts();
+}
+
+function setGreeting(){
+  const h=new Date().getHours();
+  let g,s;
+  if(h<5){g="Babar, raat ka waqt! 🌙";s="Neend puri karein";}
+  else if(h<7){g="Good Morning, Babar! 🌄";s="Fajr — bismillah se din shuru karein";}
+  else if(h<12){g="Good Morning, Babar! 🌅";s="Subah mubarak — mehnat se aage barho";}
+  else if(h<15){g="Good Afternoon, Babar! ☀️";s="Zohar ada karein";}
+  else if(h<17){g="Good Afternoon, Babar! 🌤️";s="Asar ka waqt qareeb hai";}
+  else if(h<19){g="Sham Mubarak, Babar! 🌆";s="Maghrib ki tayyari karein";}
+  else if(h<21){g="Shab Bakhair, Babar! 🌃";s="Isha ada karein";}
+  else{g="Shab Bakhair, Babar! 🌙";s="Araam farmaein";}
+  document.getElementById('greeting').textContent=g;
+  document.getElementById('greeting-sub').textContent=s;
+}
+
+// WEATHER
+async function loadWeather(){
+  try{
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+LAT+'&longitude='+LNG+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,apparent_temperature,weather_code&timezone=Asia/Karachi');
+    const d=await r.json();const c=d.current;
+    const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
+    const descs={0:'Bilkul Saaf',1:'Zyada Saaf',2:'Adha Badal',3:'Badal Chhaye',45:'Dhund',51:'Halki Baarish',61:'Baarish',71:'Baraf',80:'Tez Baarish',95:'Toofan'};
+    wx={temp:Math.round(c.temperature_2m),desc:descs[c.weather_code]||'Mausam',icon:icons[c.weather_code]||'🌤️'};
+    document.getElementById('weather').innerHTML='<div class="w-row"><div class="w-icon">'+wx.icon+'</div><div><div class="w-temp">'+wx.temp+'°C</div><div class="w-desc">'+wx.desc+'</div></div></div><div class="w-pills"><div class="w-pill">🌡️ Mehsoos: '+Math.round(c.apparent_temperature)+'°C</div><div class="w-pill">💧 Nem: '+c.relative_humidity_2m+'%</div><div class="w-pill">💨 '+Math.round(c.wind_speed_10m)+' km/h</div></div>';
+    localStorage.setItem('wx',JSON.stringify(wx));
+  }catch(e){
+    const c=localStorage.getItem('wx');if(c)wx=JSON.parse(c);
+    document.getElementById('weather').innerHTML='<div style="color:#7a8499;font-size:0.8rem">📡 Offline — cached mausam</div>';
+  }
+}
+
+// NAMAZ
+async function loadNamaz(){
+  const now=new Date();
+  const ds=pad(now.getDate())+'-'+pad(now.getMonth()+1)+'-'+now.getFullYear();
+  try{
+    const r=await fetch('https://api.aladhan.com/v1/timings/'+ds+'?latitude='+LAT+'&longitude='+LNG+'&method=1');
+    const d=await r.json();const t=d.data.timings;
+    prayers=[{n:'Fajr',t:t.Fajr,e:'🌄'},{n:'Zohar',t:t.Dhuhr,e:'☀️'},{n:'Asar',t:t.Asr,e:'🌅'},{n:'Maghrib',t:t.Maghrib,e:'🌆'},{n:'Isha',t:t.Isha,e:'🌙'}];
+    localStorage.setItem('prayers',JSON.stringify(prayers));
+    try{const h=d.data.date.hijri;document.getElementById('hijri').textContent='🗓️ '+h.day+' '+h.month.en+' '+h.year+'H';}catch(e){}
+    renderNamaz();
+  }catch(e){if(prayers.length)renderNamaz();}
+}
+
+function renderNamaz(){
+  const nm=nowM();let cur=-1;
+  for(let i=0;i<prayers.length-1;i++)if(nm>=toM(prayers[i].t)&&nm<toM(prayers[i+1].t)){cur=i;break;}
+  if(cur===-1&
